@@ -1,118 +1,105 @@
-ZendSkeletonApplication
-=======================
+Lazada test
+Rest full api
 
-Introduction
-------------
-This is a simple, skeleton application using the ZF2 MVC layer and module
-systems. This application is meant to be used as a starting place for those
-looking to get their feet wet with ZF2.
+Technologies use: 
 
-Installation using Composer
----------------------------
+Framework: Zf2
+Database: mysql
+Server: Wamp
+Tool test: post man of chrome advance client test 
 
-The easiest way to create a new ZF2 project is to use [Composer](https://getcomposer.org/). If you don't have it already installed, then please install as per the [documentation](https://getcomposer.org/doc/00-intro.md).
+Link download source: https://github.com/diepvanhao/Rest-Full-Api-Zf2
 
+After download extract source code into your server, I'm assumed your server is wamp run on window.
 
-Create your new ZF2 project:
+1.Config wamp server
+==>uncomment rewrite.so and vhosts in http.conf
+==>set virtual host on http-vhosts.conf as follow:
 
-    composer create-project -n -sdev zendframework/skeleton-application path/to/install
+<VirtualHost *:80>
+	ServerName zf2.localhost
+	DocumentRoot E:\wamp\www\zf2\public
+	SetEnv APPLICATION_ENV "development"
+	<Directory E:\wamp\www\zf2\public>
+		DirectoryIndex index.php
+		AllowOverride All
+		Order allow,deny
+		Allow from all
+	</Directory>
+</VirtualHost>
 
+<VirtualHost *:80>
+	ServerName localhost
+	DocumentRoot E:\wamp\www
+	SetEnv APPLICATION_ENV "development"
+	<Directory E:\wamp\www>
+		DirectoryIndex index.php
+		AllowOverride All
+		Order allow,deny
+		Allow from all
+	</Directory>
+</VirtualHost>
 
+In that: ServerName ,DocumentRoot and Directory will edit for your machine.
+Open host file and edit 127.0.0.1 zf2.localhost
+Now, you can access your project type: http://zf2.localhost 
+If you want to upload source to your domain name, then set up virtualhost for your domain, i recommend use localhost to run this test.
 
-### Installation using a tarball with a local Composer
+2.Config connect database for source code
 
-If you don't have composer installed globally then another way to create a new ZF2 project is to download the tarball and install it:
+The first,we create database name and import db.sql file , find this file in database folder of source code.
 
-1. Download the [tarball](https://github.com/zendframework/ZendSkeletonApplication/tarball/master), extract it and then install the dependencies with a locally installed Composer:
+==>open global.php in /config/autoload and find line "'dsn'            => 'mysql:dbname=zf2api;host=localhost',"
+change dbname for your database name.
+==>open local.php in /config/autoload and set your database account.
 
-        cd my/project/dir
-        curl -#L https://github.com/zendframework/ZendSkeletonApplication/tarball/master | tar xz --strip-components=1
-    
-
-2. Download composer into your proejct directory and install the dependencies:
-
-        curl -s https://getcomposer.org/installer | php
-        php composer.phar install
-
-If you don't have access to curl, then install Composer into your project as per the [documentation](https://getcomposer.org/doc/00-intro.md).
-
-Web server setup
-----------------
-
-### PHP CLI server
-
-The simplest way to get started if you are using PHP 5.4 or above is to start the internal PHP cli-server in the root
-directory:
-
-    php -S 0.0.0.0:8080 -t public/ public/index.php
-
-This will start the cli-server on port 8080, and bind it to all network
-interfaces.
-
-**Note:** The built-in CLI server is *for development only*.
-
-### Vagrant server
-
-This project supports a basic [Vagrant](http://docs.vagrantup.com/v2/getting-started/index.html) configuration with an inline shell provisioner to run the Skeleton Application in a [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
-
-1. Run vagrant up command
-
-    vagrant up
-
-2. Visit [http://localhost:8085](http://localhost:8085) in your browser
-
-Look in [Vagrantfile](Vagrantfile) for configuration details.
-
-### Apache setup
-
-To setup apache, setup a virtual host to point to the public/ directory of the
-project and you should be ready to go! It should look something like below:
-
-    <VirtualHost *:80>
-        ServerName zf2-app.localhost
-        DocumentRoot /path/to/zf2-app/public
-        <Directory /path/to/zf2-app/public>
-            DirectoryIndex index.php
-            AllowOverride All
-            Order allow,deny
-            Allow from all
-            <IfModule mod_authz_core.c>
-            Require all granted
-            </IfModule>
-        </Directory>
-    </VirtualHost>
-
-### Nginx setup
-
-To setup nginx, open your `/path/to/nginx/nginx.conf` and add an
-[include directive](http://nginx.org/en/docs/ngx_core_module.html#include) below
-into `http` block if it does not already exist:
-
-    http {
-        # ...
-        include sites-enabled/*.conf;
-    }
+That's it !! start your server and run project 
 
 
-Create a virtual host configuration file for your project under `/path/to/nginx/sites-enabled/zf2-app.localhost.conf`
-it should look something like below:
 
-    server {
-        listen       80;
-        server_name  zf2-app.localhost;
-        root         /path/to/zf2-app/public;
+C. API Guide
 
-        location / {
-            index index.php;
-            try_files $uri $uri/ @php;
-        }
+1. Get all post without tag condition
 
-        location @php {
-            # Pass the PHP requests to FastCGI server (php-fpm) on 127.0.0.1:9000
-            fastcgi_pass   127.0.0.1:9000;
-            fastcgi_param  SCRIPT_FILENAME /path/to/zf2-app/public/index.php;
-            include fastcgi_params;
-        }
-    }
+Request: Url: zf2.localhost
+	 Method: Get
+Response: all posts with format json.
 
-Restart the nginx, now you should be ready to go!
+2. Add new post
+
+Request: Url: zf2.localhost/api/add
+	Method: Post
+	Params: title,body,tag[] (this is option and it is a array,maybe you input 1 or more tag or 0)
+Response: return id is created of post. If add new post with tags, system will get id of tag (if exist) or new insert tag, after update tag for post
+	Format: json
+
+3. Edit post
+
+Request: Url: zf2.localhost/api/edit/$id(post id)
+
+	Method: Post
+	Params: title,body
+Response: return id of post edited if success, or notify error if fail.
+	Format: json
+4.Get post by tag or tags
+
+Request: Url: zf2.localhost/api/getpost
+	Method: Post
+	Params: tag[] (array tag)
+Response: return list post by tag or tags if finded 
+	Format: json
+5. Count post by tag or tags
+
+Request: Url: zf2.localhost/api/countpost
+	Method: Post
+	Params: tag[] (array tag)
+Response: return total post  by tag or tags
+	Format: json
+6. Delete post
+
+Request: Url: zf2.localhost/api/delete/$id(post id)
+	Method: post
+Response: return id post deleted and save into  log table or notify error if not found post id in database.
+	Format: json
+
+Note: haven't implemented post json to api yet. Just test normal post. Need to more time to optimize high load for system, because i must spend time to research zf2.
