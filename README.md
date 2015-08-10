@@ -74,7 +74,7 @@ Response: all posts with format json.
 
 Request: Url: zf2.localhost/api/add
 	Method: Post
-	Params: title,body,tag[] (this is option and it is a array,maybe you input 1 or more tag or 0)
+	Params: title,body,tag[] (this is option and it is a array,maybe you input 1 or more tag or 0 and name of tag)
 Response: return id is created of post. If add new post with tags, system will get id of tag (if exist) or new insert tag, after update tag for post
 	Format: json
 
@@ -90,14 +90,14 @@ Response: return id of post edited if success, or notify error if fail.
 
 Request: Url: zf2.localhost/api/getpost
 	Method: Post
-	Params: tag[] (array tag)
-Response: return list post by tag or tags if finded 
+	Params: tag[] (array tag's name)
+Response: return list post by tag or tags if found 
 	Format: json
 5. Count post by tag or tags
 
 Request: Url: zf2.localhost/api/countpost
 	Method: Post
-	Params: tag[] (array tag)
+	Params: tag[] (array tag's name)
 Response: return total post  by tag or tags
 	Format: json
 6. Delete post
