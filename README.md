@@ -55,9 +55,14 @@ change dbname for your database name.
 
 That's it !! start your server and run project 
 
+A. DB Guide
+We have 4 tables: post(postId,title,body),tag(tagId,name),post_tag(postId,tagId) and log(id,postId,title,body);
+1. post table contains posts
+2. tag table contains tags
+3. post_tag table contains postId and tagId for many to many relation
+4. log table contains post have deleted.
 
-
-C. API Guide
+B. API Guide
 
 1. Get all post without tag condition
 
